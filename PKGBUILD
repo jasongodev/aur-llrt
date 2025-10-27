@@ -10,7 +10,7 @@ pkgname=(
   'llrt-container'
 )
 pkgver=0.7.0beta
-pkgrel=8
+pkgrel=9
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
@@ -94,7 +94,8 @@ package_llrt() {
   provides=('llrt')
   conflicts=('llrt')
   pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (STANDARD @aws-sdk bundled)'
-  _install_llrt 'std-sdk'
+  [[ "$pkgname" == 'llrt' ]] &&
+  _install_llrt 'std-sdk' &&
   _install_licenses
 }
 
@@ -102,7 +103,8 @@ package_llrt-full-sdk() {
   provides=('llrt')
   conflicts=('llrt')
   pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (FULL @aws-sdk bundled)'
-  _install_llrt 'full-sdk'
+  [[ "$pkgname" == 'llrt-full-sdk' ]] &&
+  _install_llrt 'full-sdk' &&
   _install_licenses
 }
 
@@ -110,7 +112,8 @@ package_llrt-no-sdk() {
   provides=('llrt')
   conflicts=('llrt')
   pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (NO @aws-sdk bundled)'
-  _install_llrt 'no-sdk'
+  [[ "$pkgname" == 'llrt-no-sdk' ]] &&
+  _install_llrt 'no-sdk' &&
   _install_licenses
 }
 
@@ -118,10 +121,11 @@ package_llrt-all() {
   provides=('llrt')
   conflicts=('llrt')
   pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (All bundle types included with suffix: llrt, llrt-full-sdk, llrt-no-sdk)'
-  _install_llrt 'std-sdk'
-  _install_llrt 'std-sdk' true
-  _install_llrt 'full-sdk' true
-  _install_llrt 'no-sdk' true
+  [[ "$pkgname" == 'llrt-all' ]] &&
+  _install_llrt 'std-sdk' &&
+  _install_llrt 'std-sdk' true &&
+  _install_llrt 'full-sdk' true &&
+  _install_llrt 'no-sdk' true &&
   _install_licenses
 }
 
@@ -134,9 +138,10 @@ package_llrt-lambda() {
   provides=('llrt-lambda')
   conflicts=('llrt-lambda')
   pkgdesc='Lightweight JavaScript runtime (BOOTSTRAP/LAYER binary for AWS Lambda, AWS SAM, and AWS CDK)'
-  _install_llrt_bootstrap 'std-sdk'
-  _install_llrt_bootstrap 'full-sdk'
-  _install_llrt_bootstrap 'no-sdk'
+  [[ "$pkgname" == 'llrt-lambda' ]] &&
+  _install_llrt_bootstrap 'std-sdk' &&
+  _install_llrt_bootstrap 'full-sdk' &&
+  _install_llrt_bootstrap 'no-sdk' &&
   _install_licenses
 }
 
@@ -148,6 +153,7 @@ package_llrt-container() {
   provides=('llrt-container')
   conflicts=('llrt-container')
   pkgdesc='Lightweight JavaScript runtime (CONTAINER binary to be packaged with container images)'
-  install -Dm755 -t "$pkgdir/usr/share/llrt/container/" "$srcdir/llrt/llrt-container-$_CARCH*"
+  [[ "$pkgname" == 'llrt-container' ]] &&
+  install -Dm755 -t "$pkgdir/usr/share/llrt/container/" "$srcdir/llrt/llrt-container-$_CARCH*" &&
   _install_licenses
 }
