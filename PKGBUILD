@@ -10,7 +10,7 @@ pkgname=(
   'llrt-container'
 )
 pkgver=0.7.0beta
-pkgrel=6
+pkgrel=7
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
@@ -74,14 +74,16 @@ build() {
 
 _install_llrt() {
   local zip_suffix="$( [ "$1" == "std-sdk" ] && echo "" || echo "-$1" )"
-  bsdtar -xf "$srcdir/llrt/llrt-linux-$_CARCH$zip_suffix.zip" -C "$srcdir/llrt/"
-  install -Dm755 "$srcdir/llrt/llrt" "$pkgdir/usr/bin/llrt$([[ "$2" == true ]] && echo "-$1")"
+  mkdir -p "$srcdir/output"
+  bsdtar -xf "$srcdir/llrt/llrt-linux-$_CARCH$zip_suffix.zip" -C "$srcdir/output/"
+  install -Dm755 "$srcdir/output/llrt" "$pkgdir/usr/bin/llrt$([[ "$2" == true ]] && echo "-$1")"
 }
 
 _install_llrt_bootstrap() {
   local zip_suffix="$( [ "$1" == "std-sdk" ] && echo "" || echo "-$1" )"
-  bsdtar -xf "$srcdir/llrt/llrt-lambda-$_CARCH$zip_suffix.zip" -C "$srcdir/llrt/"
-  install -Dm755 "$srcdir/llrt/bootstrap" "$pkgdir/usr/share/llrt/lambda/$1/bootstrap"
+  mkdir -p "$srcdir/output"
+  bsdtar -xf "$srcdir/llrt/llrt-lambda-$_CARCH$zip_suffix.zip" -C "$srcdir/output/"
+  install -Dm755 "$srcdir/output/bootstrap" "$pkgdir/usr/share/llrt/lambda/$1/bootstrap"
 }
 
 _install_licenses() {
