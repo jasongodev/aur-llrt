@@ -10,7 +10,7 @@ pkgname=(
   'llrt-container'
 )
 pkgver=0.7.0beta
-pkgrel=3
+pkgrel=4
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
@@ -29,8 +29,9 @@ _CARCH="$( [ "$CARCH" == "aarch64" ] && echo "arm64" || echo "x64" )"
 prepare() {
   cd llrt
   git submodule update --init --checkout
-  rustup default nightly
+  rustup install nightly-2025-09-23
   yarn
+  sed -i "s/RUST_VERSION = nightly/RUST_VERSION = nightly-2025-09-23/g" Makefile
 }
 
 build() {
