@@ -1,6 +1,6 @@
 pkgbase = llrt
 	pkgver = 0.7.0beta
-	pkgrel = 2
+	pkgrel = 3
 	url = https://github.com/awslabs/llrt
 	arch = x86_64
 	arch = aarch64
@@ -10,6 +10,7 @@ pkgbase = llrt
 	makedepends = yarn
 	makedepends = zig
 	makedepends = zip
+	makedepends = zstd
 	optdepends = typescript: transpiler for TypeScript code with type checking support
 	optdepends = esbuild: fast compiler and bundler for JavaScript and TypeScript
 	optdepends = swc-js-bin: drop-in replacement for Babel with compilation and polyfill support

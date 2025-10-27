@@ -10,11 +10,11 @@ pkgname=(
   'llrt-container'
 )
 pkgver=0.7.0beta
-pkgrel=2
+pkgrel=3
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
-makedepends=('cmake' 'rustup' 'yarn' 'zig' 'zip')
+makedepends=('cmake' 'rustup' 'yarn' 'zig' 'zip' 'zstd')
 optdepends=(
   'typescript: transpiler for TypeScript code with type checking support'
   'esbuild: fast compiler and bundler for JavaScript and TypeScript'
@@ -29,7 +29,7 @@ _CARCH="$( [ "$CARCH" == "aarch64" ] && echo "arm64" || echo "x64" )"
 prepare() {
   cd llrt
   git submodule update --init --checkout
-  rustup default stable
+  rustup default nightly
   yarn
 }
 
