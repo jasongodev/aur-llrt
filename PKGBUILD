@@ -10,7 +10,7 @@ pkgname=(
   'llrt-container'
 )
 pkgver=0.7.0beta
-pkgrel=5
+pkgrel=6
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
@@ -29,6 +29,7 @@ _CARCH="$( [ "$CARCH" == "aarch64" ] && echo "arm64" || echo "x64" )"
 prepare() {
   cd llrt
   git submodule update --init --checkout
+  # Use Rust's nightly version from the date of the upstream release to prevent regression issues
   sed -i "s/RUST_VERSION = nightly/RUST_VERSION = nightly-2025-09-23/g" Makefile
   rustup install nightly-2025-09-23
   yarn
@@ -73,13 +74,13 @@ build() {
 
 _install_llrt() {
   local zip_suffix="$( [ "$1" == "std-sdk" ] && echo "" || echo "-$1" )"
-  bsdtar -xf "llrt-linux-$_CARCH$zip_suffix.zip" -C "$srcdir/llrt"
+  bsdtar -xf "$srcdir/llrt/llrt-linux-$_CARCH$zip_suffix.zip" -C "$srcdir/llrt/"
   install -Dm755 "$srcdir/llrt/llrt" "$pkgdir/usr/bin/llrt$([[ "$2" == true ]] && echo "-$1")"
 }
 
 _install_llrt_bootstrap() {
   local zip_suffix="$( [ "$1" == "std-sdk" ] && echo "" || echo "-$1" )"
-  bsdtar -xf "llrt-lambda-$_CARCH$zip_suffix.zip" -C "$srcdir/llrt"
+  bsdtar -xf "$srcdir/llrt/llrt-lambda-$_CARCH$zip_suffix.zip" -C "$srcdir/llrt/"
   install -Dm755 "$srcdir/llrt/bootstrap" "$pkgdir/usr/share/llrt/lambda/$1/bootstrap"
 }
 
