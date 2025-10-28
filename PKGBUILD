@@ -10,7 +10,7 @@ pkgname=(
   'llrt-container'
 )
 pkgver=0.7.0beta
-pkgrel=11
+pkgrel=12
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
@@ -127,6 +127,6 @@ package_llrt-container() {
   provides=('llrt-container')
   conflicts=('llrt-container')
   pkgdesc='Lightweight JavaScript runtime (CONTAINER binary to be packaged with container images)'
-  install -Dm755 -t "$pkgdir/usr/share/llrt/container/" "$srcdir/llrt/llrt-container-$_CARCH*"
+  install -Dm755 -t "$pkgdir/usr/share/llrt/container/" "$srcdir/llrt/"{llrt-container-"$_CARCH",llrt-container-"$_CARCH"-full-sdk,llrt-container-"$_CARCH"-no-sdk}
   _install_licenses
 }
