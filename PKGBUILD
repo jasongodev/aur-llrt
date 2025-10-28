@@ -10,7 +10,7 @@ pkgname=(
   'llrt-container'
 )
 pkgver=0.7.0beta
-pkgrel=10
+pkgrel=11
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
@@ -38,52 +38,31 @@ prepare() {
 build() {
   cd llrt
   make stdlib && make libs
-
-  case "$pkgname" in
-    llrt)
-      make release
-      ;;
-
-    llrt-full-sdk)
-      make release-full-sdk
-      ;;
-
-    llrt-no-sdk)
-      make release-no-sdk
-      ;;
-
-    llrt-all)
-      make release
-      make release-full-sdk
-      make release-no-sdk
-      ;;
-
-    llrt-lambda)
-      make llrt-lambda-"${_CARCH}".zip
-      make llrt-lambda-"${_CARCH}"-no-sdk.zip
-      make llrt-lambda-"${_CARCH}"-full-sdk.zip
-      ;;
-
-    llrt-container)
-      make llrt-container-"${_CARCH}"
-      make llrt-container-"${_CARCH}"-no-sdk
-      make llrt-container-"${_CARCH}"-full-sdk
-      ;;
-  esac
+  make release
+  make release-full-sdk
+  make release-no-sdk
+  make llrt-lambda-"${_CARCH}".zip
+  make llrt-lambda-"${_CARCH}"-no-sdk.zip
+  make llrt-lambda-"${_CARCH}"-full-sdk.zip
+  make llrt-container-"${_CARCH}"
+  make llrt-container-"${_CARCH}"-no-sdk
+  make llrt-container-"${_CARCH}"-full-sdk
 }
 
 _install_llrt() {
   local zip_suffix="$( [ "$1" == "std-sdk" ] && echo "" || echo "-$1" )"
-  mkdir -p "$srcdir/output"
-  bsdtar -xf "$srcdir/llrt/llrt-linux-$_CARCH$zip_suffix.zip" -C "$srcdir/output/"
-  install -Dm755 "$srcdir/output/llrt" "$pkgdir/usr/bin/llrt$([[ "$2" == true ]] && echo "-$1")"
+  local output_dir="$srcdir/output/llrt-linux-$_CARCH$zip_suffix"
+  mkdir -p "$output_dir"
+  bsdtar -xf "$srcdir/llrt/llrt-linux-$_CARCH$zip_suffix.zip" -C "$output_dir"
+  install -Dm755 "$output_dir/llrt" "$pkgdir/usr/bin/llrt$([[ "$2" == true ]] && echo "-$1")"
 }
 
 _install_llrt_bootstrap() {
   local zip_suffix="$( [ "$1" == "std-sdk" ] && echo "" || echo "-$1" )"
-  mkdir -p "$srcdir/output"
-  bsdtar -xf "$srcdir/llrt/llrt-lambda-$_CARCH$zip_suffix.zip" -C "$srcdir/output/"
-  install -Dm755 "$srcdir/output/bootstrap" "$pkgdir/usr/share/llrt/lambda/$1/bootstrap"
+  local output_dir="$srcdir/output/llrt-lambda-$_CARCH$zip_suffix"
+  mkdir -p "$output_dir"
+  bsdtar -xf "$srcdir/llrt/llrt-lambda-$_CARCH$zip_suffix.zip" -C "$output_dir"
+  install -Dm755 "$output_dir/bootstrap" "$pkgdir/usr/share/llrt/lambda/$1/bootstrap"
 }
 
 _install_licenses() {
@@ -94,43 +73,35 @@ package_llrt() {
   provides=('llrt')
   conflicts=('llrt')
   pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (STANDARD @aws-sdk bundled)'
-  if [[ "$pkgname" == 'llrt' ]]; then
-    _install_llrt 'std-sdk'
-    _install_licenses
-  fi
+  _install_llrt 'std-sdk'
+  _install_licenses
 }
 
 package_llrt-full-sdk() {
   provides=('llrt')
   conflicts=('llrt')
   pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (FULL @aws-sdk bundled)'
-  if [[ "$pkgname" == 'llrt-full-sdk' ]]; then
-    _install_llrt 'full-sdk'
-    _install_licenses
-  fi
+  _install_llrt 'full-sdk'
+  _install_licenses
 }
 
 package_llrt-no-sdk() {
   provides=('llrt')
   conflicts=('llrt')
   pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (NO @aws-sdk bundled)'
-  if [[ "$pkgname" == 'llrt-no-sdk' ]]; then
-    _install_llrt 'no-sdk'
-    _install_licenses
-  fi
+  _install_llrt 'no-sdk'
+  _install_licenses
 }
 
 package_llrt-all() {
   provides=('llrt')
   conflicts=('llrt')
   pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (All bundle types included with suffix: llrt, llrt-full-sdk, llrt-no-sdk)'
-  if [[ "$pkgname" == 'llrt-all' ]]; then
-    _install_llrt 'std-sdk'
-    _install_llrt 'std-sdk' true
-    _install_llrt 'full-sdk' true
-    _install_llrt 'no-sdk' true
-    _install_licenses
-  fi
+  _install_llrt 'std-sdk'
+  _install_llrt 'std-sdk' true
+  _install_llrt 'full-sdk' true
+  _install_llrt 'no-sdk' true
+  _install_licenses
 }
 
 package_llrt-lambda() {
@@ -142,12 +113,10 @@ package_llrt-lambda() {
   provides=('llrt-lambda')
   conflicts=('llrt-lambda')
   pkgdesc='Lightweight JavaScript runtime (BOOTSTRAP/LAYER binary for AWS Lambda, AWS SAM, and AWS CDK)'
-  if [[ "$pkgname" == 'llrt-lambda' ]]; then
-    _install_llrt_bootstrap 'std-sdk'
-    _install_llrt_bootstrap 'full-sdk'
-    _install_llrt_bootstrap 'no-sdk'
-    _install_licenses
-  fi
+  _install_llrt_bootstrap 'std-sdk'
+  _install_llrt_bootstrap 'full-sdk'
+  _install_llrt_bootstrap 'no-sdk'
+  _install_licenses
 }
 
 package_llrt-container() {
@@ -158,8 +127,6 @@ package_llrt-container() {
   provides=('llrt-container')
   conflicts=('llrt-container')
   pkgdesc='Lightweight JavaScript runtime (CONTAINER binary to be packaged with container images)'
-  if [[ "$pkgname" == 'llrt-container' ]]; then
-    install -Dm755 -t "$pkgdir/usr/share/llrt/container/" "$srcdir/llrt/llrt-container-$_CARCH*"
-    _install_licenses
-  fi
+  install -Dm755 -t "$pkgdir/usr/share/llrt/container/" "$srcdir/llrt/llrt-container-$_CARCH*"
+  _install_licenses
 }
