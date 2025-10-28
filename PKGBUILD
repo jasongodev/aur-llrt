@@ -10,7 +10,7 @@ pkgname=(
   'llrt-container'
 )
 pkgver=0.7.0beta
-pkgrel=12
+pkgrel=13
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
@@ -31,8 +31,9 @@ prepare() {
   git submodule update --init --checkout
   # Use Rust's nightly version from the date of the upstream release to prevent regression issues
   sed -i "s/RUST_VERSION = nightly/RUST_VERSION = nightly-2025-09-23/g" Makefile
-  rustup install nightly-2025-09-23
-  yarn
+  rustup install nightly-2025-09-23 &
+  yarn &
+  wait
 }
 
 build() {
@@ -97,11 +98,12 @@ package_llrt-all() {
   provides=('llrt')
   conflicts=('llrt')
   pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (All bundle types included with suffix: llrt, llrt-full-sdk, llrt-no-sdk)'
-  _install_llrt 'std-sdk'
-  _install_llrt 'std-sdk' true
-  _install_llrt 'full-sdk' true
-  _install_llrt 'no-sdk' true
-  _install_licenses
+  _install_llrt 'std-sdk' &
+  _install_llrt 'std-sdk' true &
+  _install_llrt 'full-sdk' true &
+  _install_llrt 'no-sdk' true &
+  _install_licenses &
+  wait
 }
 
 package_llrt-lambda() {
@@ -113,10 +115,11 @@ package_llrt-lambda() {
   provides=('llrt-lambda')
   conflicts=('llrt-lambda')
   pkgdesc='Lightweight JavaScript runtime (BOOTSTRAP/LAYER binary for AWS Lambda, AWS SAM, and AWS CDK)'
-  _install_llrt_bootstrap 'std-sdk'
-  _install_llrt_bootstrap 'full-sdk'
-  _install_llrt_bootstrap 'no-sdk'
-  _install_licenses
+  _install_llrt_bootstrap 'std-sdk' &
+  _install_llrt_bootstrap 'full-sdk' &
+  _install_llrt_bootstrap 'no-sdk' &
+  _install_licenses &
+  wait
 }
 
 package_llrt-container() {
