@@ -1,13 +1,13 @@
 pkgbase = llrt
 	pkgdesc = Lightweight JavaScript runtime, compiler, REPL, and test runner (STANDARD @aws-sdk bundled)
 	pkgver = 0.7.0beta
-	pkgrel = 14
+	pkgrel = 15
 	url = https://github.com/awslabs/llrt
 	arch = x86_64
 	arch = aarch64
 	license = Apache-2.0
 	makedepends = cmake
-	makedepends = corepack
+	makedepends = nodejs
 	makedepends = rustup
 	makedepends = zig
 	makedepends = zip
@@ -20,6 +20,8 @@ pkgbase = llrt
 	options = !buildflags
 	options = !makeflags
 	source = git+https://github.com/awslabs/llrt.git#tag=v0.7.0-beta
+	source = https://github.com/yarnpkg/yarn/releases/download/v1.22.22/yarn-v1.22.22.tar.gz
 	sha256sums = 20058c4d89e6f1675885b835aef2d3215b85fa0d55bba62d07de5481aa847e5d
+	sha256sums = 88268464199d1611fcf73ce9c0a6c4d44c7d5363682720d8506f6508addf36a0
 
 pkgname = llrt
