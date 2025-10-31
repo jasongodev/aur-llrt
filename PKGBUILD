@@ -4,7 +4,7 @@ _sdk='std-sdk'
 _suffix="$( [ "$_sdk" == "std-sdk" ] && echo "" || echo "-$_sdk" )"
 pkgname="llrt$_suffix"
 pkgver=0.7.0beta
-pkgrel=19
+pkgrel=20
 pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (STANDARD @aws-sdk bundled)'
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
@@ -40,9 +40,17 @@ prepare() {
   sed -i "s/RUST_VERSION = nightly/RUST_VERSION = nightly-2025-09-23/g" Makefile
 
   rustup install nightly-2025-09-23 &
+  task1=$!
+
   git submodule update --init --checkout &
+  task2=$!
+
   "$srcdir/yarn-v1.22.22/bin/yarn" &
-  wait
+  task3=$!
+
+  wait $task1
+  wait $task2
+  wait $task3
 }
 
 build() {
