@@ -4,7 +4,7 @@ _sdk='std-sdk'
 _suffix="$( [ "$_sdk" == "std-sdk" ] && echo "" || echo "-$_sdk" )"
 pkgname="llrt$_suffix"
 pkgver=0.7.0beta
-pkgrel=17
+pkgrel=18
 pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (STANDARD @aws-sdk bundled)'
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
@@ -48,11 +48,11 @@ prepare() {
 build() {
   cd llrt
   make "stdlib-$_CARCH" && make "libs-$_CARCH"
-  make llrt-linux-$_CARCH$_suffix.zip
+  make "llrt-linux-$_CARCH$_suffix.zip"
 }
 
 package() {
   install -Dm755 "$srcdir/llrt/target/$CARCH-unknown-linux-musl/release/llrt" "$pkgdir/usr/bin/llrt"
-  ln -sf "$pkgdir/usr/bin/llrt" "$pkgdir/usr/bin/llrt$_suffix" # Provide a suffixed alias to llrt
+  ln -sf "$pkgdir/usr/bin/llrt" "$pkgdir/usr/bin/llrt-$_sdk" # Provide a suffixed alias to llrt
   install -Dm644 -t "$pkgdir/usr/share/licenses/$pkgname" "$srcdir/llrt/"{LICENSE,THIRD_PARTY_LICENSES,NOTICE}
 }
