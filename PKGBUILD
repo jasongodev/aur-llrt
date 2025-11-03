@@ -1,15 +1,16 @@
 # Maintainer: Jason Go <jasongo@jasongo.net>
 
+_rust_version='nightly-2025-09-23'
 _sdk='std-sdk'
 _suffix="$( [ "$_sdk" == "std-sdk" ] && echo "" || echo "-$_sdk" )"
 pkgname="llrt$_suffix"
 pkgver=0.7.0beta
-pkgrel=20
+pkgrel=21
 pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (STANDARD @aws-sdk bundled)'
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
-makedepends=('cmake' 'nodejs' 'rustup' 'zig' 'zip' 'zstd')
+makedepends=('cmake' 'nodejs' 'parallel' 'rustup' 'zig' 'zip' 'zstd')
 optdepends=(
   'typescript: transpiler for TypeScript code with type checking support'
   'esbuild: fast compiler and bundler for JavaScript and TypeScript'
@@ -31,31 +32,22 @@ sha256sums=(
 _CARCH="$( [ "$CARCH" == "aarch64" ] && echo "arm64" || echo "x64" )"
 
 prepare() {
-  # Use locally installed Yarn to prevent conflict with extra/corepack, extra/yarn, or any other globally installed Yarn
-  bsdtar zvxf yarn-v1.22.22.tar.gz
-
   cd llrt
 
   # Use Rust's nightly version from the date of the upstream release to prevent regression issues
-  sed -i "s/RUST_VERSION = nightly/RUST_VERSION = nightly-2025-09-23/g" Makefile
+  sed -i "s/RUST_VERSION = nightly/RUST_VERSION = $_rust_version/g" Makefile
 
-  rustup install nightly-2025-09-23 &
-  task1=$!
-
-  git submodule update --init --checkout &
-  task2=$!
-
-  "$srcdir/yarn-v1.22.22/bin/yarn" &
-  task3=$!
-
-  wait $task1
-  wait $task2
-  wait $task3
+  echo "Downloading..."
+  parallel --halt now,fail=1 --keep-order --latest-line --link --tagstring '{1}:' '{2}' \
+    ::: '      Git submodules' '   Rust dependencies' 'AWS SDK dependencies' \
+    ::: 'git submodule update --init --checkout && echo "Done!"' \
+        "rustup toolchain install $_rust_version --target $CARCH-unknown-linux-musl && make stdlib-$_CARCH && cargo fetch --target $CARCH-unknown-linux-musl --color never && echo 'Done!'" \
+        "$srcdir/yarn-v1.22.22/bin/yarn install --no-progress && echo 'Done!'"
 }
 
 build() {
   cd llrt
-  make "stdlib-$_CARCH" && make "libs-$_CARCH"
+  make "libs-$_CARCH"
   make "llrt-linux-$_CARCH$_suffix.zip"
 }
 
