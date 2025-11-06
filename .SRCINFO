@@ -1,7 +1,7 @@
 pkgbase = llrt
 	pkgdesc = Lightweight JavaScript runtime, compiler, REPL, and test runner (STANDARD @aws-sdk bundled)
 	pkgver = 0.7.0beta
-	pkgrel = 22
+	pkgrel = 23
 	url = https://github.com/awslabs/llrt
 	arch = x86_64
 	arch = aarch64
@@ -12,7 +12,6 @@ pkgbase = llrt
 	makedepends = parallel
 	makedepends = rustup
 	makedepends = zig
-	makedepends = zip
 	makedepends = zstd
 	optdepends = typescript: transpiler for TypeScript code with type checking support
 	optdepends = esbuild: fast compiler and bundler for JavaScript and TypeScript

@@ -6,12 +6,12 @@ _sdk='std-sdk'
 _suffix="$( [ "$_sdk" == "std-sdk" ] && echo "" || echo "-$_sdk" )"
 pkgname="llrt$_suffix"
 pkgver=0.7.0beta
-pkgrel=22
+pkgrel=23
 pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (STANDARD @aws-sdk bundled)'
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
-makedepends=('cmake' 'git' 'nodejs' 'parallel' 'rustup' 'zig' 'zip' 'zstd')
+makedepends=('cmake' 'git' 'nodejs' 'parallel' 'rustup' 'zig' 'zstd')
 optdepends=(
   'typescript: transpiler for TypeScript code with type checking support'
   'esbuild: fast compiler and bundler for JavaScript and TypeScript'
@@ -32,6 +32,9 @@ _carch="$( [ "$CARCH" == "aarch64" ] && echo "arm64" || echo "x64" )"
 
 prepare() {
   cd llrt
+
+  # Use bsdtar instead of zip
+  sed -i "s#zip -j#bsdtar -s ',^.*/,,g' -caf#g" Makefile
 
   # Use Rust's nightly version from the date of the upstream release to prevent regression issues
   sed -i "s/RUST_VERSION = nightly/RUST_VERSION = $_rust_version/g" Makefile
