@@ -6,12 +6,12 @@ _sdk='std-sdk'
 _suffix="$( [ "$_sdk" == "std-sdk" ] && echo "" || echo "-$_sdk" )"
 pkgname="llrt$_suffix"
 pkgver=0.7.0beta
-pkgrel=23
+pkgrel=24
 pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (STANDARD @aws-sdk bundled)'
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
 license=('Apache-2.0')
-makedepends=('cmake' 'git' 'nodejs' 'parallel' 'rustup' 'zig' 'zstd')
+makedepends=('cmake' 'git' 'make' 'nodejs' 'parallel' 'rustup' 'zig' 'zstd')
 optdepends=(
   'typescript: transpiler for TypeScript code with type checking support'
   'esbuild: fast compiler and bundler for JavaScript and TypeScript'
