@@ -1,5 +1,4 @@
 # Maintainer: Jason Go <jasongo@jasongo.net>
-# Contributor:
 
 _rust_version='nightly-2025-09-23'
 _sdk='std-sdk'
