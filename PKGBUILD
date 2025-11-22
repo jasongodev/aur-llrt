@@ -6,7 +6,7 @@ _sdk='std-sdk'
 _suffix="$( [ "$_sdk" == "std-sdk" ] && echo "" || echo "-$_sdk" )"
 pkgname="llrt$_suffix"
 pkgver=0.7.0beta
-pkgrel=26
+pkgrel=27
 pkgdesc='Lightweight JavaScript runtime, compiler, REPL, and test runner (STANDARD @aws-sdk bundled)'
 arch=('x86_64' 'aarch64')
 url='https://github.com/awslabs/llrt'
@@ -31,7 +31,7 @@ sha256sums_aarch64=('5270159a87dba69a48df112ac833172c1269b6242da478d95245317de98
 _carch="$( [ "$CARCH" == "aarch64" ] && echo "arm64" || echo "x64" )"
 
 prepare() {
-  cd llrt
+  cd llrt || exit 1
 
   # Use bsdtar instead of zip
   sed -i "s#zip -j#bsdtar -s ',^.*/,,g' -caf#g" Makefile
@@ -55,7 +55,7 @@ prepare() {
 }
 
 build() {
-  cd llrt
+  cd llrt || exit 1
   make "libs-$_carch"
   make "llrt-linux-$_carch$_suffix.zip"
 }
